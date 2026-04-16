@@ -14,6 +14,10 @@ CHIP PC {
     OUT out[16];
     
     PARTS:
-    Register(in=in, load=load, out=val);
-    // TODO
+    Or(a=load, b=reset, out=change1);
+    Or(a=change1, b=inc, out=save);
+    Mux16(a=in, b=false, sel=reset, out=inval);
+    ALU(x=last, y[0]=true, zx=false, nx=false, zy=false, ny=false, f=true, no=false, out=incval, zr=fds1, ng=fds2);
+    Mux16(a=incval, b=inval, sel=change1, out=val);
+    Register(in=val, load=save, out=last, out=out);
 }
